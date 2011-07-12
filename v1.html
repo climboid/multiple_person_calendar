@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+	<HEAD>
+	<title>Participant Availability</title>
+	<link href="../scui/0.4/css/allStyles.css" rel="stylesheet" type="text/css"  />
+	<style>
+	.height_font{height:20px;font-family:Arial, Helvetica, sans-serif; font-size:12px;}
+	.purple-background{background-color:#993366;}
+	.light-blue-background{background-color:#ECEDFC;}
+	.medium-blue-background{background-color:#ABC0DB;}
+	</style>
+		<script>
+	 	function fnScroll(){
+	 	 	fb_data_view.scrollLeft = 2250;//to scroll to the section where data for the selected start date is present.
+	 	} 
+		</script>
+	</HEAD>
+	<BODY onload="javascript:fnScroll();">
+<div width=100%>
+<table border="0" cellspacing="1" width="100%" class="fullBorder" style="table-layout:fixed;">
+<tr>
+ <td width=100px height=48px class="light-gray-background">&nbsp;</td>
+ <!-- objNodeNameList must be each person fetches -->
+ <td rowspan="<%=objNodeNameList.length+2%>" class="light-gray-background">
+ <div style="width:100%;overflow-x:scroll;" id="fb_data_view">
+  <table width=100% border="0" cellspacing="1" style="background-color:white;">
+        
+      <!-- finds how many days are in the data set -->
+	  <%set objNodeDays = objNodeList.item(0).selectnodes("day")%>
+        <tr>
+          <!-- creates a column header for each day -->
+		  <%for each objNodeDay in objNodeDays
+            status_day = objNodeDay.Attributes(0).Text%> 
+           <td colspan="48" class="light-gray-background height_font">&nbsp;&nbsp;<%=Formatdatetime(status_day,1)%></td>  
+          <%next%> 
+        </tr>
+        <tr>
+        <!-- time headers, not quite sure how these are built. -->
+		<% for each objNodeDay in objNodeDays
+            set objNodeTimes = objNodeDay.selectnodes("time")
+			 for each objNodeTime in objNodeTimes
+			  status_time = objNodeTime.Attributes(0).Text
+			  if instr(1,status_time,":00")>0 then%>
+		       <td class="light-gray-background height_font" style="font-size:11px;" colspan="2"><%=status_time%></td>
+		     <%end if
+		     next
+		   next%> 
+		</tr>
+   		<%for each objItemNode in objNodeList
+		    set objNodeName = objItemNode.selectsinglenode("name")
+		    set objNodeDays = objItemNode.selectnodes("day")
+			    
+		 ' <tr>
+		'	  <td class="dark-gray-background">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		'	</tr>
+			%><tr width="600px"><%
+			'	<td width=25% class="green-background"><div><%=objNodeName.text</div></td>
+			 for each objNodeDay in objNodeDays
+			   set objNodeTimes = objNodeDay.selectnodes("time")
+			   for each objNodeTime in objNodeTimes
+			     if objNodeTime.text = "2" then'busy
+			        status_color = "blue-background"
+			     elseif objNodeTime.text = "1" then' tentative
+			        status_color = "medium-blue-background"
+			     elseif objNodeTime.text = "3" then 'out of office
+			        status_color = "purple-background"
+			     elseif objNodeTime.text = "4" then' data not available
+			        status_color = "dark-gray-background"
+			     else 'available  
+			        status_color = "lighter-gray-background"
+			     end if%>
+				<td style="height:20px;" class="<%=status_color%>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			 <%next	
+			  next%>
+			</tr>
+		<%next%>
+	</table>
+   </div>
+  </td>
+ </tr> 
+ <%for i=1 to objNodeNameList.length%>
+ <tr>
+  <td style="width:100px;height:22px;font-family:Arial, Helvetica, sans-serif; font-size:11px;overflow-x:hidden;" class="green-background" title="<%=objNodeNameList.item(i-1).text%>">&nbsp;<%=mid(objNodeNameList.item(i-1).text,1,15)%></td>
+ </tr>
+ <%next%>  		
+ <tr id="dummy">
+  <td width=100px class="light-gray-background">&nbsp;</td>
+ </tr>
+</table>
+<table border="0">
+ <tr>
+  <td><div style="width:14px;height:14px;" class="lighter-gray-background">&nbsp;</div></td><td class="height_font">Available&nbsp;&nbsp;</td>
+  <td><div style="width:14px;height:14px;" class="blue-background">&nbsp;</div></td><td class="height_font">Busy&nbsp;&nbsp;</td>
+  <td><div style="width:14px;height:14px;" class="medium-blue-background">&nbsp;</div></td><td class="height_font">Tentative&nbsp;&nbsp;</td>
+  <td><div style="width:14px;height:14px;" class="purple-background">&nbsp;</div></td><td class="height_font">Out of Office&nbsp;&nbsp;</td>
+  <td><div style="width:14px;height:14px;" class="dark-gray-background">&nbsp;</div></td><td class="height_font">Information not available</td>
+  
+ </tr>
+</table>
+<span class="red_small" style="font-family:Arial, Helvetica, sans-serif; font-size:11px;">Note: Timings are according to <b>GMT <%=time_zone%></b> timezone.</span>
+<table style="width:100%;table-layout:fixed;">
+ <tr>
+  <td width="45%">&nbsp;</td>
+  <td width="10%" class="blue_button_small">&nbsp;<a href=# style="font-family:Arial, Helvetica, sans-serif;font-size:12px;font-weight:bold;" id='close_confirm' onClick="javascript:window.close();">Close</a>&nbsp;</td>
+  <td width="45%">&nbsp;</td>
+ </tr> 
+</table>
+</div>
+
+</BODY>
+</html>
